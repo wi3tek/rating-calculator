@@ -18,10 +18,9 @@ public class RatingService {
     private final ExpectedScoreService expectedScoreService = new ExpectedScoreService();
     private final ActualScoreService actualScoreService = new ActualScoreService();
     private final GoalsService goalsService = new GoalsService();
+    private final ApplicationProperties properties = new ApplicationProperties();
 
-    private static final BigDecimal WEIGHT_INDEX = BigDecimal.valueOf( 20 );
 
-//    @LogEvent dodać logowanie
     public RatingResponse calculateRating(@Valid RatingRequest request) {
         if (request.getTeamA() == null || request.getTeamB() == null)
             throw new RatingException( "Requested teams cannot be null" );
@@ -73,8 +72,8 @@ public class RatingService {
         return playerRating.add( ratingDifference );
     }
 
-    private static BigDecimal calculateRatingDifference(BigDecimal actualScore, BigDecimal expectedScore, BigDecimal goalsDifferenceIndex) {
-        return WEIGHT_INDEX
+    private BigDecimal calculateRatingDifference(BigDecimal actualScore, BigDecimal expectedScore, BigDecimal goalsDifferenceIndex) {
+        return properties.getWeightIndex()
                 .multiply( goalsDifferenceIndex )
                 .multiply( actualScore.subtract( expectedScore ) )
                 .divide( new BigDecimal( 1 ), 0,

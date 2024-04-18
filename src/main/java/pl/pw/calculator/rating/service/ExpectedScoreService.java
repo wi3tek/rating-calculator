@@ -10,7 +10,7 @@ import java.util.Map;
 
 class ExpectedScoreService {
 
-    private static final BigDecimal RATING_DIFFERENCE_INDEX = BigDecimal.valueOf( 400 );
+    private final ApplicationProperties properties = new ApplicationProperties();
 
     Map<String, BigDecimal> calculateExpectedScores(
             GameTeamData teamA,
@@ -47,9 +47,9 @@ class ExpectedScoreService {
                 .divide( (BigDecimal.ONE.add( BigDecimal.valueOf( poweredGoals ) )), 5, RoundingMode.CEILING );
     }
 
-    private static Double preparePower(BigDecimal teamRating, BigDecimal opponentRating) {
+    private Double preparePower(BigDecimal teamRating, BigDecimal opponentRating) {
         return (opponentRating.subtract( teamRating ))
-                .divide( RATING_DIFFERENCE_INDEX,
+                .divide( properties.getRatingDifferenceIndex(),
                         5,
                         RoundingMode.CEILING
                 ).doubleValue();
